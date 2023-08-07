@@ -1,12 +1,12 @@
 package com.sparky.webpage.webpage;
 
-import Controller.Controller;
+import Controller.WebController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackageClasses = Controller.class)
+@ComponentScan(basePackageClasses = WebController.class)
 public class WebPageApplication {
 
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Hello, Thymeleaf!</title>
+    <title>Sparky Web</title>
 </head>
 <style>
 
@@ -168,6 +168,7 @@
         const selectedFile = event.target.files[0];
         const allowedExtensions = ['.xls', '.xlsx'];
 
+
         if (selectedFile) {
             const fileExtension = '.' + selectedFile.name.split('.').pop();
             if (allowedExtensions.includes(fileExtension.toLowerCase())) {
@@ -179,15 +180,15 @@
                     method: 'POST',
                     body: formData
                 })
-                    .then(response => response.json())
+                    .then(response => response.body)
                     .then(data => {
                         const resultMessage = document.getElementById('resultMessage');
-                        resultMessage.textContent = data.message;
+                        resultMessage.textContent = data;
                         showPopup();
                     })
                     .catch(error => {
                         const resultMessage = document.getElementById('resultMessage');
-                        resultMessage.textContent = 'Error: ' + error.message;
+                        resultMessage.textContent = 'Error: ' + error;
                         showPopup();
                     });
             } else {
