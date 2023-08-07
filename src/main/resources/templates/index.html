@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hello, Thymeleaf!</title>
+</head>
+<style>
+
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    .container {
+        height: 100vh;
+        width: 100%;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        background-color: #fcfcfc;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
+        width: 600px;
+        height: 260px;
+        background-color: #ffffff;
+        padding: 10px 30px 40px;
+    }
+
+    .card h3 {
+        font-size: 22px;
+        font-weight: 600;
+
+    }
+
+    .drop_box {
+        margin: 10px 0;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border: 3px dotted #a3a3a3;
+        border-radius: 5px;
+    }
+
+    .drop_box h4 {
+        font-size: 16px;
+        font-weight: 400;
+        color: #2e2e2e;
+    }
+
+    .drop_box p {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        color: #a3a3a3;
+    }
+
+    .btnsel {
+        text-decoration: none;
+        background-color: #005af0;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .btnsel:hover{
+        text-decoration: none;
+        background-color: #ffffff;
+        color: #005af0;
+        padding: 10px 20px;
+        border: none;
+        outline: 1px solid #010101;
+    }
+    .form input {
+        margin: 10px 0;
+        width: 100%;
+        background-color: #e2e2e2;
+        border: none;
+        outline: none;
+        padding: 12px 20px;
+        border-radius: 4px;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+
+</style>
+<body>
+
+
+<div class="container">
+    <div class="card">
+        <h3>Upload Files</h3>
+        <div class="drop_box">
+            <header>
+                <h4>Select File here</h4>
+            </header>
+            <p>Files Supported: Excel files (XLS, XLSX)</p>
+            <input type="file" hidden accept=".xls,.xlsx" id="fileID" style="display:none;">
+            <button class="btnsel" onclick="chooseFile()">Choose File</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="resultPopup">
+        <div class="popup">
+            <h3 id="resultMessage"></h3>
+            <button class="btn" onclick="hidePopup()">Done</button>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<script>
+    function chooseFile() {
+        const fileInput = document.getElementById('fileID');
+        fileInput.click();
+    }
+
+    const fileInput = document.getElementById('fileID');
+    fileInput.addEventListener('change', handleFileUpload);
+
+    function handleFileUpload(event) {
+        const selectedFile = event.target.files[0];
+        const allowedExtensions = ['.xls', '.xlsx'];
+
+        if (selectedFile) {
+            const fileExtension = '.' + selectedFile.name.split('.').pop();
+            if (allowedExtensions.includes(fileExtension.toLowerCase())) {
+                // Handle successful file upload
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                fetch('http://localhost:9000/Sparky/SaveFile', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultMessage = document.getElementById('resultMessage');
+                        resultMessage.textContent = data.message;
+                        showPopup();
+                    })
+                    .catch(error => {
+                        const resultMessage = document.getElementById('resultMessage');
+                        resultMessage.textContent = 'Error: ' + error.message;
+                        showPopup();
+                    });
+            } else {
+                // Handle invalid file extension
+                const resultMessage = document.getElementById('resultMessage');
+                resultMessage.textContent = 'Error: Invalid file type. Supported types are XLS and XLSX.';
+                showPopup();
+            }
+        }
+    }
+
+    function showPopup() {
+        const popup = document.getElementById('resultPopup');
+        popup.style.display = 'flex';
+    }
+
+    function hidePopup() {
+        const popup = document.getElementById('resultPopup');
+        popup.style.display = 'none';
+    }
+</script>
+
+
+
+</body>
+</html>
