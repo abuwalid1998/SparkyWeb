@@ -15,8 +15,10 @@
         font-family: "Poppins", sans-serif;
     }
 
+
+
     .container {
-        height: 100vh;
+        margin-top: auto;
         width: 100%;
         align-items: center;
         display: flex;
@@ -28,9 +30,19 @@
         border-radius: 10px;
         box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
         width: 600px;
-        height: 260px;
         background-color: #ffffff;
+        align-items: center;
         padding: 10px 30px 40px;
+        height: auto;
+        margin-top: 100px/* Set height to auto */
+    }
+
+    .card img {
+        display: block;
+        margin: 30px auto;
+        height: 300px;
+        width: 300px;
+
     }
 
     .card h3 {
@@ -65,7 +77,7 @@
 
     .btnsel {
         text-decoration: none;
-        background-color: #005af0;
+        background-color: #e38c08;
         color: #ffffff;
         padding: 10px 20px;
         border: none;
@@ -76,7 +88,7 @@
     .btnsel:hover{
         text-decoration: none;
         background-color: #ffffff;
-        color: #005af0;
+        color: #faa507;
         padding: 10px 20px;
         border: none;
         outline: 1px solid #010101;
@@ -132,6 +144,7 @@
 
 <div class="container">
     <div class="card">
+        <img src="/logo.png" alt="Sparky" class="card img">
         <h3>Upload Files</h3>
         <div class="drop_box">
             <header>
@@ -149,9 +162,8 @@
             <button class="btn" onclick="hidePopup()">Done</button>
         </div>
     </div>
-
-
 </div>
+
 
 
 
@@ -165,6 +177,7 @@
     fileInput.addEventListener('change', handleFileUpload);
 
     function handleFileUpload(event) {
+
         const selectedFile = event.target.files[0];
         const allowedExtensions = ['.xls', '.xlsx'];
 
@@ -180,15 +193,15 @@
                     method: 'POST',
                     body: formData
                 })
-                    .then(response => response.body)
+                    .then(response => response.json())
                     .then(data => {
                         const resultMessage = document.getElementById('resultMessage');
-                        resultMessage.textContent = data;
+                        resultMessage.textContent = data.message;
                         showPopup();
                     })
                     .catch(error => {
                         const resultMessage = document.getElementById('resultMessage');
-                        resultMessage.textContent = 'Error: ' + error;
+                        resultMessage.textContent = 'Error: ' + error.message;
                         showPopup();
                     });
             } else {

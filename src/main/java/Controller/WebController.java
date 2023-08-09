@@ -17,6 +17,18 @@ public class WebController {
         return "template";
     }
 
+    @CrossOrigin(origins = "http://localhost:9000")
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+    @CrossOrigin(origins = "http://localhost:9000")
+    @GetMapping("/download")
+    public String Downloadfile(){
+        return "Download";
+    }
+
 
 
 
