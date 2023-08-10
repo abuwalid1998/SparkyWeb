@@ -29,8 +29,8 @@
     }
 
     .card-img {
-        width: 100px;
-        height: auto;
+        width: 150px;
+        height: 150px;
         margin-bottom: 10px;
     }
 
@@ -98,8 +98,13 @@
         <img src="/logo.png" alt="Sparky" class="card-img">
         <h3>Download File</h3>
         <div class="drop-box">
+
             <input type="text" id="filenameInput" placeholder="Enter Filename (without extension)">
+
             <button class="btnsel" onclick="downloadFile()">Download</button>
+
+            <button class="btnsel" onclick="ScanAnddownloadFile()">Scan And Download</button>
+
         </div>
     </div>
     <div class="overlay" id="resultPopup">
@@ -113,11 +118,46 @@
     function downloadFile() {
         const filename = document.getElementById("filenameInput").value;
 
-        fetch(`http://localhost:9000/Sparky/check-file/${filename}`)
+        fetch(`http://localhost:9000/Sparky/files/check-file/${filename}`)
             .then(response => response.json())
             .then(data => {
                 if (data.exists) {
-                    window.location.href = `http://localhost:9000/Sparky/download/${filename}`;
+                    console.log("File Founded"+filename);
+                    window.location.href = `http://localhost:9000/Sparky/files/download/${filename}`;
+                } else {
+                    document.getElementById("resultMessage").innerText = "File not available";
+                    showPopup();
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
+
+    function ScanAnddownloadFile() {
+        const filename = document.getElementById("filenameInput").value;
+
+        fetch(`http://localhost:9000/Sparky/files/check-file/${filename}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    fetch(`http://localhost:9000/Sparky/ScanFile/${filename}`,{
+                        method: 'POST',
+                    }).then(response => response.json()).then(
+                        scandata => {
+                            if (scandata.isdone){
+
+                                document.getElementById("resultMessage").innerText = "File Scan Compleated";
+
+                                showPopup();
+
+                                window.location.href = `http://localhost:9000/Sparky/files/download/${filename}`;
+                            }else{
+                                document.getElementById("resultMessage").innerText = "File Scan Error";
+                                showPopup();
+                            }
+                        }
+                    );
                 } else {
                     document.getElementById("resultMessage").innerText = "File not available";
                     showPopup();

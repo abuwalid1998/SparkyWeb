@@ -30,6 +30,11 @@ public class WebController {
     }
 
 
+    @CrossOrigin(origins = "http://localhost:9000")
+    @GetMapping("/StartSpark")
+    public String StartSpark(){
+        return "StartSpark";
+    }
 
 
 }
