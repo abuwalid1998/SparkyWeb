@@ -36,7 +36,7 @@
     }
 
     .btn {
-        width: 180px;
+        width: 500px;
         height: 60px;
         cursor: pointer;
         background: transparent;
@@ -74,35 +74,78 @@
     footer {
         text-align: center;
         padding: 3px;
-        background-color: DarkSalmon;
+        background-color: #f58400;
         color: white;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
+        width: 600px;
+        background-color: #ffffff;
+        align-items: center;
+        padding: 10px 30px 40px;
+        height: auto;
+        margin-top: 100px/* Set height to auto */
+    }
+
+    .card img {
+        display: block;
+        margin: 30px auto;
+        height: 300px;
+        width: 300px;
+
     }
 
 
 </style>
 <body>
 
+
 <div class="container">
-    <div class="center">
-        <button class="btn" onclick="StartSpark()">
-            <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
-                <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
-                <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
-            </svg>
-            <span>Start Spark</span>
-        </button>
-
+    <div class="card">
+        <img src="/logo.png" alt="Sparky" class="card img">
+        <div class="drop_box">
+            <button class="btn" onclick="StartSpark()">
+                <svg width="180px" height="60px" viewBox="0 0 180 60" class="border">
+                    <polyline points="179,1 179,59 1,59 1,1 179,1" class="bg-line" />
+                    <polyline points="179,1 179,59 1,59 1,1 179,1" class="hl-line" />
+                </svg>
+                <span>Start Spark</span>
+            </button>
+            <h1 >Spark Session id : </h1>
+            <h2 id="result"></h2>
+        </div>
     </div>
-</div>
+    </div>
 
-
-<footer>
-    <h1 id="result"></h1>
-</footer>
 
 <script >
 
     function StartSpark(){
+
+        const sparkyConfig = {
+            appname: 'SparkyFinance',
+            master: 'local[*]'
+        };
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(sparkyConfig),
+        };
+
+
+        fetch('http://localhost:9000/Sparky/StartSparkyServer',requestOptions).then(
+            response => response.json()
+        ).then(data => {
+             const resultMessage = document.getElementById('result');
+             resultMessage.textContent = data.message;
+            }
+        );
+
 
     }
 
